@@ -8,11 +8,11 @@
 #include <QFileDialog>
 #include <QtDebug>
 
-
+//create table maket
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    int rowCount = 8;
+    int rowCount = 4;
     QTextEdit* teEditor = new QTextEdit;
 
     QTextTableFormat tableFormat;
@@ -46,12 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
     *cur = tab->cellAt(1, 0).firstCursorPosition();
     cur->setBlockFormat(*centerAlignment);
     cur->insertText("0...(Nh-1)");
-    for(int i = 0; i < rowCount-3; ++i)
-    {
-        *cur = tab->cellAt(3+i, 0).firstCursorPosition();
-        cur->setBlockFormat(*centerAlignment);
-        cur->insertText("Nh+"+QVariant(i).toString());
-    }
+    *cur = tab->cellAt(3, 0).firstCursorPosition();
+    cur->setBlockFormat(*centerAlignment);
+    cur->insertText("Nh+0");
+
     for(int i = 31, j = 1; i >= 0; --i, ++j)
     {
         *cur = tab->cellAt(0, j).firstCursorPosition();
@@ -102,6 +100,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::addField(const QString &str, const int length)
 {
+    if (rowFilled()) appendRow();//checkRowFieldsLimit();
     int columnNumber = insertCoords.second - length;
     if (columnNumber > 0)
     {
@@ -110,8 +109,23 @@ void MainWindow::addField(const QString &str, const int length)
         *cur = tab->cellAt(insertCoords.first, insertCoords.second).firstCursorPosition();
         cur->setBlockFormat(*centerAlignment);
         cur->insertText(str);
-        checkRowFieldsLimit();
     }
+}
+
+void MainWindow::appendRow()
+{
+    insertCoords.first +=  1;
+    insertCoords.second = 33;
+    tab->appendRows(1);
+    *cur = tab->cellAt(insertCoords.first, 0).firstCursorPosition();
+    cur->setBlockFormat(*centerAlignment);
+    cur->insertText("Nh+"+QString::number(tab->rows()-4));
+}
+
+bool MainWindow::rowFilled()
+{
+    if (insertCoords.second == 1) return true;
+    else return false;
 }
 
 void MainWindow::addBrackets(const char bracket1, const char bracket2)
@@ -182,5 +196,6 @@ void MainWindow::checkRowFieldsLimit()
     {
         insertCoords.second = 33;
         insertCoords.first +=  1;
+        tab->appendRows(1);
     }
 }

@@ -18,6 +18,8 @@ public:
     void addBrackets(const char, const char);
     bool isValid(QString&);
     void addField(const QString&, const int);
+    void appendRow();
+    bool rowFilled();
 
 
 private:
@@ -29,12 +31,12 @@ private:
 
 private:
     QTextTable *tab;
-    QString opBracketArr = "";
-    QString closeBracketArr = "";
     QTextDocument *doc;
     QTextCursor *cur;
     QTextBlockFormat *centerAlignment;
     std::pair<uint,uint> insertCoords;
+    QString opBracketArr = "";
+    QString closeBracketArr = "";
 };
 
 #endif // MAINWINDOW_H
