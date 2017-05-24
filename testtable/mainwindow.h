@@ -15,8 +15,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void addBrackets(const char, const char);
-    bool isValid(QString&);
     void addField(const QString&, const int);
 
 
