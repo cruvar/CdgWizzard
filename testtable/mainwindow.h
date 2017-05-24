@@ -18,15 +18,11 @@ public:
     void addBrackets(const char, const char);
     bool isValid(QString&);
     void addField(const QString&, const int);
-    void appendRow();
-    bool rowFilled();
 
 
 private:
-    int  checkOpBracket(QCharRef);
-    bool isCloseBracket(QCharRef);
-    bool checkRange(QString&, int&, const int);
-    void checkRowFieldsLimit();
+    void appendRow();
+    bool rowFilled();
 
 
 private:
@@ -35,8 +31,6 @@ private:
     QTextCursor *cur;
     QTextBlockFormat *centerAlignment;
     std::pair<uint,uint> insertCoords;
-    QString opBracketArr = "";
-    QString closeBracketArr = "";
 };
 
 #endif // MAINWINDOW_H
