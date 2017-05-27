@@ -7,6 +7,8 @@ class QTextTable;
 class QTextBlockFormat;
 class QTextDocument;
 class QTextCursor;
+class QTextEdit;
+class QTextCharFormat;
 
 class MainWindow : public QMainWindow
 {
@@ -15,19 +17,27 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void addField(const QString&, const int);
+    void insertField(const QString&, const int);
+    void printPDF();
+    void printODT();
+    void insertHeader(const QString&);
+    void insertComment(const QString&, const QString&);
 
+    void testInit();
 
 private:
     void appendRow();
     bool rowFilled();
+    void createCarcass();
 
 
 private:
     QTextTable *tab;
+    QTextEdit *teEditor;
     QTextDocument *doc;
     QTextCursor *cur;
-    QTextBlockFormat *centerAlignment;
+    QTextBlockFormat *textFormat;
+    QTextCharFormat *commentTextFormat;
     std::pair<uint,uint> insertCoords;
 };
 
