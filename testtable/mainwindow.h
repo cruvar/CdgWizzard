@@ -8,7 +8,6 @@ class QTextBlockFormat;
 class QTextDocument;
 class QTextCursor;
 class QTextEdit;
-class QTextCharFormat;
 
 class MainWindow : public QMainWindow
 {
@@ -21,14 +20,13 @@ public:
     void printPDF();
     void printODT();
     void insertHeader(const QString&);
-    void insertComment(const QString&, const QString&);
 
     void testInit();
 
 private:
     void appendRow();
     bool rowFilled();
-    void createCarcass();
+    void createTableDecor();
 
 
 private:
@@ -37,7 +35,6 @@ private:
     QTextDocument *doc;
     QTextCursor *cur;
     QTextBlockFormat *textFormat;
-    QTextCharFormat *commentTextFormat;
     std::pair<uint,uint> insertCoords;
 };
 

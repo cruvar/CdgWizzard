@@ -7,7 +7,7 @@
 #include <QtPrintSupport/QPrinter>
 #include <QFileDialog>
 #include <QtDebug>
-
+#include <QPdfWriter>
 
 QTextTableFormat tableFormat()
 {
@@ -17,7 +17,8 @@ QTextTableFormat tableFormat()
     brush.setColor(QColor(Qt::black));
     brush.setStyle(Qt::SolidPattern);
     tableFormat.setBorderBrush(brush);
-    tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
+    //tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
+    tableFormat.setWidth(QTextLength(QTextLength::FixedLength, 390));
     tableFormat.setCellSpacing(0);
     tableFormat.setCellPadding(1);
     tableFormat.setBorder(1);
@@ -25,7 +26,7 @@ QTextTableFormat tableFormat()
     QVector<QTextLength> constraints;
     constraints << QTextLength(QTextLength::FixedLength, 70);
     for (int i = 0; i < 32; ++i)
-        constraints << QTextLength(QTextLength::FixedLength, 17);
+        constraints << QTextLength(QTextLength::FixedLength, 10);
     tableFormat.setColumnWidthConstraints(constraints);
 
     return tableFormat;
@@ -46,32 +47,23 @@ QTextBlockFormat getTableTextFormat()
     return format;
 }
 
-QTextCharFormat getCommentTextFormat()
-{
-    QTextCharFormat format;
-    format.setFontFamily("Times");
-    format.setFontPointSize(14);
-    return format;
-}
-
-//create table maket
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+  //  QPainter painter;
     teEditor = new QTextEdit;
     this->setCentralWidget(teEditor);
-    teEditor->setFontFamily("Courier");
-    teEditor->setFontPointSize(14);
+    //teEditor->setFontFamily("Courier");
+    //teEditor->setFontPointSize(14);
     doc = new QTextDocument(teEditor);
     cur = new QTextCursor(doc);
     teEditor->setDocument(doc);
-    tab = cur->insertTable(5, 33, tableFormat());
 
+    tab = cur->insertTable(5, 33, tableFormat());
+    //doc->setDefaultFont(QFont("Arial", 8));
     textFormat = new QTextBlockFormat();
     *textFormat = getTableTextFormat();
-    commentTextFormat = new QTextCharFormat();
-    *commentTextFormat = getCommentTextFormat();
-    createCarcass();
+    createTableDecor();
 
     insertCoords.first  = 3;
     insertCoords.second = 33;
@@ -109,10 +101,17 @@ void MainWindow::printPDF()
 
 void MainWindow::printODT()
 {
+    QPrinter printer(QPrinter::HighResolution);
+       printer.setOutputFormat(QPrinter::NativeFormat);
+       printer.setOrientation(QPrinter::Portrait);
+       printer.setPageMargins(20, 10, 20, 10, QPrinter::Millimeter);
+
     QTextDocumentWriter writer;
+    QPainter painter();
     writer.setFormat("HTML");
-    writer.setFileName("timob.odt");
-    writer.write(doc);
+    writer.setFileName("new.odt");
+    //writer.write(doc);
+    doc->drawContents(painter);
 }
 
 void MainWindow::insertHeader(const QString &str)
@@ -120,14 +119,6 @@ void MainWindow::insertHeader(const QString &str)
     *cur = tab->cellAt(1, 1).firstCursorPosition();
     cur->setBlockFormat(*textFormat);
     cur->insertText(str);
-}
-
-void MainWindow::insertComment(const QString &fieldName, const QString &fieldComment)
-{
-    cur->movePosition(QTextCursor::End);
-    cur->insertBlock();
-    cur->setCharFormat(*commentTextFormat);
-    cur->insertText("\n"+fieldName+"\t"+fieldComment);
 }
 
 void MainWindow::appendRow()
@@ -138,7 +129,7 @@ void MainWindow::appendRow()
     tab->insertRows(rowNumber, 1);
     *cur = tab->cellAt(insertCoords.first, 0).firstCursorPosition();
     cur->setBlockFormat(*textFormat);
-    cur->insertText("Nh+"+QString::number(tab->rows()-4));
+    cur->insertText("Nh+"+QString::number(tab->rows()-5));
 }
 
 bool MainWindow::rowFilled()
@@ -147,7 +138,7 @@ bool MainWindow::rowFilled()
     else return false;
 }
 
-void MainWindow::createCarcass()
+void MainWindow::createTableDecor()
 {
     //fill standard table fields
     tab->mergeCells(1, 1, 1, 32);
@@ -201,9 +192,4 @@ void MainWindow::testInit()
     insertField("AD_AKP1",      8);
     insertField("AD_AKP2",      8);
     insertField("AD_AKP3",      8);
-
-    insertComment("Azimuth", "Азимут (ЕМР = 360º/65536)");
-    insertComment("CI", "Признак того, что пеленгация проводилась по сигналу из помеховой зоны");
-    insertComment("S", "Признак секторного режима.");
-    insertComment("Mod[i]", "Модуляция зондирующего импульса в i-м режиме пакета (0 — отсутствие ЗИ, 1 — немодулированный ЗИ, 2 — ЛЧМ с нарастанием частоты, 3 — ЛЧМ с убыванием частоты)");
 }
