@@ -17,16 +17,16 @@ QTextTableFormat tableFormat()
     brush.setColor(QColor(Qt::black));
     brush.setStyle(Qt::SolidPattern);
     tableFormat.setBorderBrush(brush);
-    //tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
-    tableFormat.setWidth(QTextLength(QTextLength::FixedLength, 390));
+    tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
+    //tableFormat.setWidth(QTextLength(QTextLength::FixedLength, 390));
     tableFormat.setCellSpacing(0);
     tableFormat.setCellPadding(1);
     tableFormat.setBorder(1);
 
     QVector<QTextLength> constraints;
-    constraints << QTextLength(QTextLength::FixedLength, 70);
+    constraints << QTextLength(QTextLength::FixedLength, 75);
     for (int i = 0; i < 32; ++i)
-        constraints << QTextLength(QTextLength::FixedLength, 10);
+        constraints << QTextLength(QTextLength::FixedLength, 18);
     tableFormat.setColumnWidthConstraints(constraints);
 
     return tableFormat;
@@ -102,7 +102,6 @@ void MainWindow::printPDF()
 void MainWindow::printODT()
 {
     QTextDocumentWriter writer;
-
     writer.setFormat("HTML");
     writer.setFileName("new.odt");
     writer.write(doc);
