@@ -101,17 +101,11 @@ void MainWindow::printPDF()
 
 void MainWindow::printODT()
 {
-    QPrinter printer(QPrinter::HighResolution);
-       printer.setOutputFormat(QPrinter::NativeFormat);
-       printer.setOrientation(QPrinter::Portrait);
-       printer.setPageMargins(20, 10, 20, 10, QPrinter::Millimeter);
-
     QTextDocumentWriter writer;
-    QPainter painter();
+
     writer.setFormat("HTML");
     writer.setFileName("new.odt");
-    //writer.write(doc);
-    doc->drawContents(painter);
+    writer.write(doc);
 }
 
 void MainWindow::insertHeader(const QString &str)
